@@ -10,7 +10,7 @@ spring:
     continue-on-error: true
   jpa:
     show-sql: false
-#    generate-ddl: false
+    #    generate-ddl: false
     hibernate:
       ddl-auto: create
     database: postgresql
@@ -21,13 +21,13 @@ spring:
     database-platform: org.hibernate.dialect.PostgreSQL9Dialect
   #      dialect: org.hibernate.dialect.MySQL5Dialect
 
-#  jackson:
-#    default-property-inclusion: non_null
-#  redis:
-#    host: localhost
-#    port: 6379
-#  freemarker:
-#      cache: false
+  #  jackson:
+  #    default-property-inclusion: non_null
+  #  redis:
+  #    host: localhost
+  #    port: 6379
+  #  freemarker:
+  #      cache: false
 
 
 
@@ -39,5 +39,5 @@ server:
   servlet:
     contextPath: /api
 
-jwtSecret: me.zhulin
+jwtSecret: ch.segoy
 jwtExpiration: 86400

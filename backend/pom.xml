@@ -8,7 +8,7 @@
         <version>3.5.3</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
-    <groupId>me.zhulin</groupId>
+    <groupId>ch.segoy</groupId>
     <artifactId>shop-api</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>shop-api</name>
