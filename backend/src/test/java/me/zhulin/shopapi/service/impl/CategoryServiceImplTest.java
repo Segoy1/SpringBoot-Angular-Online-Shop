@@ -42,11 +42,9 @@ public class CategoryServiceImplTest {
     Mockito.when(productCategoryRepository.findByCategoryType(productCategory.getCategoryId()))
         .thenReturn(null);
 
-    categoryService.findByCategoryType(productCategory.getCategoryId());
-
     assertThatThrownBy(() -> {
       categoryService.findByCategoryType(productCategory.getCategoryId());
     }).isInstanceOf(MyException.class)
-      .hasMessageContaining("Status is not correct");
+      .hasMessageContaining("Category does not exit!");
   }
 }

@@ -19,143 +19,132 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 @ExtendWith(SpringExtension.class)
 public class ProductServiceImplTest {
 
-    @InjectMocks
-    private ProductServiceImpl productService;
+  @InjectMocks private ProductServiceImpl productService;
 
-    @Mock
-    private ProductInfoRepository productInfoRepository;
+  @Mock private ProductInfoRepository productInfoRepository;
 
-    @Mock
-    private CategoryService categoryService;
+  @Mock private CategoryService categoryService;
 
-    private ProductInfo productInfo;
+  private ProductInfo productInfo;
 
-    @BeforeEach
-    public void setUp() {
-        productInfo = new ProductInfo();
-        productInfo.setProductId("1");
-        productInfo.setProductStock(10);
-        productInfo.setProductStatus(1);
-    }
+  @BeforeEach
+  public void setUp() {
+    productInfo = new ProductInfo();
+    productInfo.setProductId("1");
+    productInfo.setProductStock(10);
+    productInfo.setProductStatus(1);
+  }
 
-    @Test
-    public void increaseStockTest() {
-        when(productInfoRepository.findByProductId(productInfo.getProductId())).thenReturn(productInfo);
+  @Test
+  public void increaseStockTest() {
+    when(productInfoRepository.findByProductId(productInfo.getProductId())).thenReturn(productInfo);
 
-        productService.increaseStock("1", 10);
+    productService.increaseStock("1", 10);
 
-        Mockito.verify(productInfoRepository, Mockito.times(1)).save(productInfo);
-    }
+    Mockito.verify(productInfoRepository, Mockito.times(1)).save(productInfo);
+  }
 
-    @Test
-    public void increaseStockExceptionTest() {
-        assertThatThrownBy(() -> productService.increaseStock("1", 10))
-            .isInstanceOf(MyException.class);
-    }
+  @Test
+  public void increaseStockExceptionTest() {
+    assertThatThrownBy(() -> productService.increaseStock("1", 10)).isInstanceOf(MyException.class);
+  }
 
-    @Test
-    public void decreaseStockTest() {
-        when(productInfoRepository.findByProductId(productInfo.getProductId())).thenReturn(productInfo);
+  @Test
+  public void decreaseStockTest() {
+    when(productInfoRepository.findByProductId(productInfo.getProductId())).thenReturn(productInfo);
 
-        productService.decreaseStock("1", 9);
+    productService.decreaseStock("1", 9);
 
-        Mockito.verify(productInfoRepository, Mockito.times(1)).save(productInfo);
-    }
+    Mockito.verify(productInfoRepository, Mockito.times(1)).save(productInfo);
+  }
 
-    @Test
-    public void decreaseStockValueLesserEqualTest() {
-        when(productInfoRepository.findByProductId(productInfo.getProductId())).thenReturn(productInfo);
+  @Test
+  public void decreaseStockValueLesserEqualTest() {
+    when(productInfoRepository.findByProductId(productInfo.getProductId())).thenReturn(productInfo);
 
-        assertThatThrownBy(() -> productService.decreaseStock("1", 10))
-            .isInstanceOf(MyException.class);
-    }
+    assertThatThrownBy(() -> productService.decreaseStock("1", 10)).isInstanceOf(MyException.class);
+  }
 
-    @Test
-    public void decreaseStockExceptionTest() {
-        assertThatThrownBy(() -> productService.decreaseStock("1", 10))
-            .isInstanceOf(MyException.class);
-    }
+  @Test
+  public void decreaseStockExceptionTest() {
+    assertThatThrownBy(() -> productService.decreaseStock("1", 10)).isInstanceOf(MyException.class);
+  }
 
-    @Test
-    public void offSaleTest() {
-        productInfo.setProductStatus(ProductStatusEnum.UP.getCode());
+  @Test
+  public void offSaleTest() {
+    productInfo.setProductStatus(ProductStatusEnum.UP.getCode());
 
-        when(productInfoRepository.findByProductId(productInfo.getProductId())).thenReturn(productInfo);
+    when(productInfoRepository.findByProductId(productInfo.getProductId())).thenReturn(productInfo);
 
-        productService.offSale("1");
+    productService.offSale("1");
 
-        Mockito.verify(productInfoRepository, Mockito.times(1)).save(productInfo);
-    }
+    Mockito.verify(productInfoRepository, Mockito.times(1)).save(productInfo);
+  }
 
-    @Test
-    public void offSaleStatusDownTest() {
-        productInfo.setProductStatus(ProductStatusEnum.DOWN.getCode());
+  @Test
+  public void offSaleStatusDownTest() {
+    productInfo.setProductStatus(ProductStatusEnum.DOWN.getCode());
 
-        when(productInfoRepository.findByProductId(productInfo.getProductId())).thenReturn(productInfo);
+    when(productInfoRepository.findByProductId(productInfo.getProductId())).thenReturn(productInfo);
 
-        assertThatThrownBy(() -> productService.offSale("1"))
-            .isInstanceOf(MyException.class);
-    }
+    assertThatThrownBy(() -> productService.offSale("1")).isInstanceOf(MyException.class);
+  }
 
-    @Test
-    public void offSaleProductNullTest() {
-        when(productInfoRepository.findByProductId(productInfo.getProductId())).thenReturn(null);
+  @Test
+  public void offSaleProductNullTest() {
+    when(productInfoRepository.findByProductId(productInfo.getProductId())).thenReturn(null);
 
-        assertThatThrownBy(() -> productService.offSale("1"))
-            .isInstanceOf(MyException.class);
-    }
+    assertThatThrownBy(() -> productService.offSale("1")).isInstanceOf(MyException.class);
+  }
 
-    @Test
-    public void onSaleTest() {
-        productInfo.setProductStatus(ProductStatusEnum.DOWN.getCode());
+  @Test
+  public void onSaleTest() {
+    productInfo.setProductStatus(ProductStatusEnum.DOWN.getCode());
 
-        when(productInfoRepository.findByProductId(productInfo.getProductId())).thenReturn(productInfo);
+    when(productInfoRepository.findByProductId(productInfo.getProductId())).thenReturn(productInfo);
 
-        productService.onSale("1");
+    productService.onSale("1");
 
-        Mockito.verify(productInfoRepository, Mockito.times(1)).save(productInfo);
-    }
+    Mockito.verify(productInfoRepository, Mockito.times(1)).save(productInfo);
+  }
 
-    @Test
-    public void onSaleStatusUpTest() {
-        productInfo.setProductStatus(ProductStatusEnum.UP.getCode());
-        when(productInfoRepository.findByProductId(productInfo.getProductId())).thenReturn(productInfo);
-        assertThatThrownBy(() -> productService.onSale("1"))
-            .isInstanceOf(MyException.class);
-    }
+  @Test
+  public void onSaleStatusUpTest() {
+    productInfo.setProductStatus(ProductStatusEnum.UP.getCode());
+    when(productInfoRepository.findByProductId(productInfo.getProductId())).thenReturn(productInfo);
+    assertThatThrownBy(() -> productService.onSale("1")).isInstanceOf(MyException.class);
+  }
 
-    @Test
-    public void onSaleProductNullTest() {
-        when(productInfoRepository.findByProductId(productInfo.getProductId())).thenReturn(null);
-        assertThatThrownBy(() -> productService.offSale("1"))
-            .isInstanceOf(MyException.class);
-    }
+  @Test
+  public void onSaleProductNullTest() {
+    when(productInfoRepository.findByProductId(productInfo.getProductId())).thenReturn(null);
+    assertThatThrownBy(() -> productService.offSale("1")).isInstanceOf(MyException.class);
+  }
 
-    @Test
-    public void updateTest() {
-        productService.update(productInfo);
+  @Test
+  public void updateTest() {
+    productService.update(productInfo);
 
-        Mockito.verify(productInfoRepository, Mockito.times(1)).save(productInfo);
-    }
+    Mockito.verify(productInfoRepository, Mockito.times(1)).save(productInfo);
+  }
 
-    @Test
-    public void updateProductStatusBiggerThenOneTest() {
-        productInfo.setProductStatus(2);
-        assertThatThrownBy(() -> productService.update(productInfo))
-            .isInstanceOf(MyException.class);
-    }
+  @Test
+  public void updateProductStatusBiggerThenOneTest() {
+    productInfo.setProductStatus(2);
+    assertThatThrownBy(() -> productService.update(productInfo)).isInstanceOf(MyException.class);
+  }
 
-    @Test
-    public void deleteTest() {
-        when(productInfoRepository.findByProductId(productInfo.getProductId())).thenReturn(productInfo);
+  @Test
+  public void deleteTest() {
+    when(productInfoRepository.findByProductId(productInfo.getProductId())).thenReturn(productInfo);
 
-        productService.delete("1");
+    productService.delete("1");
 
-        Mockito.verify(productInfoRepository, Mockito.times(1)).delete(productInfo);
-    }
+    Mockito.verify(productInfoRepository, Mockito.times(1)).delete(productInfo);
+  }
 
-    @Test
-    public void deleteProductNullTest() {
-        productService.delete("1");
-    }
+  @Test
+  public void deleteProductNullTest() {
+    assertThatThrownBy(() -> productService.delete("1")).isInstanceOf(MyException.class);
+  }
 }

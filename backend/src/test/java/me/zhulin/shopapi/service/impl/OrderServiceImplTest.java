@@ -72,10 +72,12 @@ public class OrderServiceImplTest {
 
     when(orderRepository.findByOrderId(orderMain.getOrderId())).thenReturn(orderMain);
 
-    OrderMain orderMainReturn = orderService.finish(orderMain.getOrderId());
-
-    assertThat(orderMainReturn.getOrderId()).isEqualTo(orderMain.getOrderId());
-    assertThat(orderMainReturn.getOrderStatus()).isEqualTo(OrderStatusEnum.FINISHED.getCode());
+    assertThatThrownBy(
+            () -> {
+              orderService.finish(orderMain.getOrderId());
+            })
+        .isInstanceOf(MyException.class)
+        .hasMessageContaining("Status is not correct");
   }
 
   @Test
@@ -84,10 +86,12 @@ public class OrderServiceImplTest {
 
     when(orderRepository.findByOrderId(orderMain.getOrderId())).thenReturn(orderMain);
 
-    OrderMain orderMainReturn = orderService.finish(orderMain.getOrderId());
-
-    assertThat(orderMainReturn.getOrderId()).isEqualTo(orderMain.getOrderId());
-    assertThat(orderMainReturn.getOrderStatus()).isEqualTo(OrderStatusEnum.FINISHED.getCode());
+    assertThatThrownBy(
+            () -> {
+              orderService.finish(orderMain.getOrderId());
+            })
+        .isInstanceOf(MyException.class)
+        .hasMessageContaining("Status is not correct");
   }
 
   @Test
@@ -120,7 +124,7 @@ public class OrderServiceImplTest {
     orderMain.setOrderStatus(OrderStatusEnum.CANCELED.getCode());
     when(orderRepository.findByOrderId(orderMain.getOrderId())).thenReturn(orderMain);
     assertThatThrownBy(() -> orderService.cancel(orderMain.getOrderId()))
-      .isInstanceOf(MyException.class);
+        .isInstanceOf(MyException.class);
   }
 
   @Test
@@ -128,6 +132,6 @@ public class OrderServiceImplTest {
     orderMain.setOrderStatus(OrderStatusEnum.FINISHED.getCode());
     when(orderRepository.findByOrderId(orderMain.getOrderId())).thenReturn(orderMain);
     assertThatThrownBy(() -> orderService.cancel(orderMain.getOrderId()))
-      .isInstanceOf(MyException.class);
+        .isInstanceOf(MyException.class);
   }
 }
