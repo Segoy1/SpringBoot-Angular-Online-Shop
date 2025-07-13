@@ -4,61 +4,57 @@ import me.zhulin.shopapi.entity.Cart;
 import me.zhulin.shopapi.entity.ProductInOrder;
 import me.zhulin.shopapi.entity.User;
 import me.zhulin.shopapi.repository.ProductInOrderRepository;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.Set;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
-@RunWith(SpringRunner.class)
+@ExtendWith(SpringExtension.class)
 public class ProductInOrderServiceImplTest {
 
-    @Mock
-    private ProductInOrderRepository productInOrderRepository;
+  @Mock private ProductInOrderRepository productInOrderRepository;
 
-    @InjectMocks
-    private ProductInOrderServiceImpl productInOrderService;
+  @InjectMocks private ProductInOrderServiceImpl productInOrderService;
 
-    private User user;
+  private User user;
 
-    private ProductInOrder productInOrder;
+  private ProductInOrder productInOrder;
 
-    @Before
-    public void setUp() {
-        user = new User();
-        Cart cart = new Cart();
+  @BeforeEach
+  public void setUp() {
+    user = new User();
+    Cart cart = new Cart();
 
-        productInOrder = new ProductInOrder();
-        productInOrder.setProductId("1");
+    productInOrder = new ProductInOrder();
+    productInOrder.setProductId("1");
 
-        Set set = new HashSet<>();
-        set.add(productInOrder);
+    Set set = new HashSet<>();
+    set.add(productInOrder);
 
-        cart.setProducts(set);
+    cart.setProducts(set);
 
-        user.setCart(cart);
-    }
+    user.setCart(cart);
+  }
 
-    @Test
-    public void updateTest() {
-        productInOrderService.update("1", 10, user);
+  @Test
+  public void updateTest() {
+    productInOrderService.update("1", 10, user);
 
-        Mockito.verify(productInOrderRepository, Mockito.times(1)).save(productInOrder);
-    }
+    Mockito.verify(productInOrderRepository, Mockito.times(1)).save(productInOrder);
+  }
 
-    @Test
-    public void findOneTest() {
-        ProductInOrder productInOrderReturn = productInOrderService.findOne("1", user);
+  @Test
+  public void findOneTest() {
+    ProductInOrder productInOrderReturn = productInOrderService.findOne("1", user);
 
-        assertThat(productInOrderReturn.getProductId(), is(productInOrder.getProductId()));
-    }
+    assertThat(productInOrderReturn.getProductId()).isEqualTo(productInOrder.getProductId());
+  }
 }

@@ -5,17 +5,18 @@ import me.zhulin.shopapi.enums.ProductStatusEnum;
 import me.zhulin.shopapi.exception.MyException;
 import me.zhulin.shopapi.repository.ProductInfoRepository;
 import me.zhulin.shopapi.service.CategoryService;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import static org.mockito.Mockito.when;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-@RunWith(SpringRunner.class)
+@ExtendWith(SpringExtension.class)
 public class ProductServiceImplTest {
 
     @InjectMocks
@@ -29,7 +30,7 @@ public class ProductServiceImplTest {
 
     private ProductInfo productInfo;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         productInfo = new ProductInfo();
         productInfo.setProductId("1");
@@ -46,9 +47,10 @@ public class ProductServiceImplTest {
         Mockito.verify(productInfoRepository, Mockito.times(1)).save(productInfo);
     }
 
-    @Test(expected = MyException.class)
+    @Test
     public void increaseStockExceptionTest() {
-        productService.increaseStock("1", 10);
+        assertThatThrownBy(() -> productService.increaseStock("1", 10))
+            .isInstanceOf(MyException.class);
     }
 
     @Test
@@ -60,16 +62,18 @@ public class ProductServiceImplTest {
         Mockito.verify(productInfoRepository, Mockito.times(1)).save(productInfo);
     }
 
-    @Test(expected = MyException.class)
+    @Test
     public void decreaseStockValueLesserEqualTest() {
         when(productInfoRepository.findByProductId(productInfo.getProductId())).thenReturn(productInfo);
 
-        productService.decreaseStock("1", 10);
+        assertThatThrownBy(() -> productService.decreaseStock("1", 10))
+            .isInstanceOf(MyException.class);
     }
 
-    @Test(expected = MyException.class)
+    @Test
     public void decreaseStockExceptionTest() {
-        productService.decreaseStock("1", 10);
+        assertThatThrownBy(() -> productService.decreaseStock("1", 10))
+            .isInstanceOf(MyException.class);
     }
 
     @Test
@@ -83,20 +87,22 @@ public class ProductServiceImplTest {
         Mockito.verify(productInfoRepository, Mockito.times(1)).save(productInfo);
     }
 
-    @Test(expected = MyException.class)
+    @Test
     public void offSaleStatusDownTest() {
         productInfo.setProductStatus(ProductStatusEnum.DOWN.getCode());
 
         when(productInfoRepository.findByProductId(productInfo.getProductId())).thenReturn(productInfo);
 
-        productService.offSale("1");
+        assertThatThrownBy(() -> productService.offSale("1"))
+            .isInstanceOf(MyException.class);
     }
 
-    @Test(expected = MyException.class)
+    @Test
     public void offSaleProductNullTest() {
         when(productInfoRepository.findByProductId(productInfo.getProductId())).thenReturn(null);
 
-        productService.offSale("1");
+        assertThatThrownBy(() -> productService.offSale("1"))
+            .isInstanceOf(MyException.class);
     }
 
     @Test
@@ -110,20 +116,19 @@ public class ProductServiceImplTest {
         Mockito.verify(productInfoRepository, Mockito.times(1)).save(productInfo);
     }
 
-    @Test(expected = MyException.class)
+    @Test
     public void onSaleStatusUpTest() {
         productInfo.setProductStatus(ProductStatusEnum.UP.getCode());
-
         when(productInfoRepository.findByProductId(productInfo.getProductId())).thenReturn(productInfo);
-
-        productService.onSale("1");
+        assertThatThrownBy(() -> productService.onSale("1"))
+            .isInstanceOf(MyException.class);
     }
 
-    @Test(expected = MyException.class)
+    @Test
     public void onSaleProductNullTest() {
         when(productInfoRepository.findByProductId(productInfo.getProductId())).thenReturn(null);
-
-        productService.offSale("1");
+        assertThatThrownBy(() -> productService.offSale("1"))
+            .isInstanceOf(MyException.class);
     }
 
     @Test
@@ -133,11 +138,11 @@ public class ProductServiceImplTest {
         Mockito.verify(productInfoRepository, Mockito.times(1)).save(productInfo);
     }
 
-    @Test(expected = MyException.class)
+    @Test
     public void updateProductStatusBiggerThenOneTest() {
         productInfo.setProductStatus(2);
-
-        productService.update(productInfo);
+        assertThatThrownBy(() -> productService.update(productInfo))
+            .isInstanceOf(MyException.class);
     }
 
     @Test
@@ -149,7 +154,7 @@ public class ProductServiceImplTest {
         Mockito.verify(productInfoRepository, Mockito.times(1)).delete(productInfo);
     }
 
-    @Test(expected = MyException.class)
+    @Test
     public void deleteProductNullTest() {
         productService.delete("1");
     }

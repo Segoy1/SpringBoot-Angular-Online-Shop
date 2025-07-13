@@ -2,8 +2,8 @@ package me.zhulin.shopapi.form;
 
 import lombok.Data;
 
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotEmpty;
 
 /**
  * Created By Zhu Lin on 3/11/2018.

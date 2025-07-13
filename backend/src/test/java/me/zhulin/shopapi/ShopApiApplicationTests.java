@@ -1,11 +1,11 @@
 package me.zhulin.shopapi;
 
 import me.zhulin.shopapi.service.impl.*;
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
+import org.junit.platform.suite.api.SelectClasses;
+import org.junit.platform.suite.api.Suite;
 
-@RunWith(Suite.class)
-@Suite.SuiteClasses({
+@Suite
+@SelectClasses({
         CartServiceImplTest.class,
         CategoryServiceImplTest.class,
         OrderServiceImplTest.class,
@@ -14,6 +14,4 @@ import org.junit.runners.Suite;
         UserServiceImplTest.class
 })
 public class ShopApiApplicationTests {
-
 }
-

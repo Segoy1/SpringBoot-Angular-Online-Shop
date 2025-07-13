@@ -8,121 +8,131 @@ import me.zhulin.shopapi.repository.CartRepository;
 import me.zhulin.shopapi.repository.OrderRepository;
 import me.zhulin.shopapi.repository.ProductInOrderRepository;
 import me.zhulin.shopapi.service.ProductService;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.Set;
 
-@RunWith(SpringRunner.class)
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
+@ExtendWith(SpringExtension.class)
 public class CartServiceImplTest {
 
-    @InjectMocks
-    private CartServiceImpl cartService;
+  @InjectMocks private CartServiceImpl cartService;
 
-    @Mock
-    private ProductService productService;
+  @Mock private ProductService productService;
 
-    @Mock
-    private ProductInOrderRepository productInOrderRepository;
+  @Mock private ProductInOrderRepository productInOrderRepository;
 
-    @Mock
-    private CartRepository cartRepository;
+  @Mock private CartRepository cartRepository;
 
-    @Mock
-    private OrderRepository orderRepository;
+  @Mock private OrderRepository orderRepository;
 
-    private User user;
+  private User user;
 
-    private ProductInOrder productInOrder;
+  private ProductInOrder productInOrder;
 
-    private Set<ProductInOrder> set;
+  private Set<ProductInOrder> set;
 
-    private Cart cart;
+  private Cart cart;
 
-    @Before
-    public void setUp() {
-        user = new User();
-        cart = new Cart();
+  @BeforeEach
+  public void setUp() {
+    user = new User();
+    cart = new Cart();
 
-        user.setEmail("email@email.com");
-        user.setName("Name");
-        user.setPhone("Phone Test");
-        user.setAddress("Address Test");
+    user.setEmail("email@email.com");
+    user.setName("Name");
+    user.setPhone("Phone Test");
+    user.setAddress("Address Test");
 
-        productInOrder = new ProductInOrder();
-        productInOrder.setProductId("1");
-        productInOrder.setCount(10);
-        productInOrder.setProductPrice(BigDecimal.valueOf(1));
+    productInOrder = new ProductInOrder();
+    productInOrder.setProductId("1");
+    productInOrder.setCount(10);
+    productInOrder.setProductPrice(BigDecimal.valueOf(1));
 
-        set = new HashSet<>();
-        set.add(productInOrder);
+    set = new HashSet<>();
+    set.add(productInOrder);
 
-        cart.setProducts(set);
+    cart.setProducts(set);
 
-        user.setCart(cart);
-    }
+    user.setCart(cart);
+  }
 
-    @Test
-    public void mergeLocalCartTest() {
-        cartService.mergeLocalCart(set, user);
+  @Test
+  public void mergeLocalCartTest() {
+    cartService.mergeLocalCart(set, user);
 
-        Mockito.verify(cartRepository, Mockito.times(1)).save(cart);
-        Mockito.verify(productInOrderRepository, Mockito.times(1)).save(productInOrder);
-    }
+    Mockito.verify(cartRepository, Mockito.times(1)).save(cart);
+    Mockito.verify(productInOrderRepository, Mockito.times(1)).save(productInOrder);
+  }
 
-    @Test
-    public void mergeLocalCartTwoProductTest() {
-        ProductInOrder productInOrder2 = new ProductInOrder();
-        productInOrder2.setProductId("2");
-        productInOrder2.setCount(10);
+  @Test
+  public void mergeLocalCartTwoProductTest() {
+    ProductInOrder productInOrder2 = new ProductInOrder();
+    productInOrder2.setProductId("2");
+    productInOrder2.setCount(10);
 
-        user.getCart().getProducts().add(productInOrder2);
+    user.getCart().getProducts().add(productInOrder2);
 
-        cartService.mergeLocalCart(set, user);
+    cartService.mergeLocalCart(set, user);
 
-        Mockito.verify(cartRepository, Mockito.times(1)).save(cart);
-        Mockito.verify(productInOrderRepository, Mockito.times(1)).save(productInOrder);
-        Mockito.verify(productInOrderRepository, Mockito.times(1)).save(productInOrder2);
-    }
+    Mockito.verify(cartRepository, Mockito.times(1)).save(cart);
+    Mockito.verify(productInOrderRepository, Mockito.times(1)).save(productInOrder);
+    Mockito.verify(productInOrderRepository, Mockito.times(1)).save(productInOrder2);
+  }
 
-    @Test
-    public void mergeLocalCartNoProductTest() {
-        user.getCart().setProducts(new HashSet<>());
+  @Test
+  public void mergeLocalCartNoProductTest() {
+    user.getCart().setProducts(new HashSet<>());
 
-        cartService.mergeLocalCart(set, user);
+    cartService.mergeLocalCart(set, user);
 
-        Mockito.verify(cartRepository, Mockito.times(1)).save(cart);
-        Mockito.verify(productInOrderRepository, Mockito.times(1)).save(productInOrder);
-    }
+    Mockito.verify(cartRepository, Mockito.times(1)).save(cart);
+    Mockito.verify(productInOrderRepository, Mockito.times(1)).save(productInOrder);
+  }
 
-    @Test
-    public void deleteTest() {
-        cartService.delete("1", user);
+  @Test
+  public void deleteTest() {
+    cartService.delete("1", user);
 
-        Mockito.verify(productInOrderRepository, Mockito.times(1)).deleteById(productInOrder.getId());
-    }
+    Mockito.verify(productInOrderRepository, Mockito.times(1)).deleteById(productInOrder.getId());
+  }
 
-    @Test(expected = MyException.class)
-    public void deleteNoProductTest() {
-        cartService.delete("", user);
-    }
+  @Test
+  public void deleteNoProductTest() {
+    assertThatThrownBy(
+            () -> {
+              cartService.delete("", user);
+            })
+        .isInstanceOf(MyException.class)
+        .hasMessageContaining("Status is not correct");
+  }
 
-    @Test(expected = MyException.class)
-    public void deleteNoUserTest() {
-        cartService.delete("1", null);
-    }
+  @Test
+  public void deleteNoUserTest() {
 
-    @Test
-    public void checkoutTest() {
-        cartService.checkout(user);
+    assertThatThrownBy(
+            () -> {
+              cartService.delete("1", null);
+            })
+        .isInstanceOf(MyException.class)
+        .hasMessageContaining("Status is not correct");
+  }
 
-        Mockito.verify(productInOrderRepository, Mockito.times(1)).save(productInOrder);
-    }
+  @Test
+  public void checkoutTest() {
+    cartService.checkout(user);
+
+    Mockito.verify(productInOrderRepository, Mockito.times(1)).save(productInOrder);
+  }
 }

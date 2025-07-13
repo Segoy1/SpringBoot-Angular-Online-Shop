@@ -1,8 +1,8 @@
 package me.zhulin.shopapi.api;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Created By Zhu Lin on 1/2/2019.
